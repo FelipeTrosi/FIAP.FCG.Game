@@ -1,3 +1,4 @@
+using Elastic.Clients.Elasticsearch;
 using FIAP.FCG.Game.API.Extensions;
 using FIAP.FCG.Game.Infrastructure.Repository;
 using Microsoft.AspNetCore.Http.Features;
@@ -91,6 +92,16 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
+
+#region -- Elasticsearch
+builder.Services.AddSingleton(sp =>
+{
+    var settings = new ElasticsearchClientSettings(new Uri(configuration["Elasticsearch:Url"]!))
+        .DefaultIndex("games");
+
+    return new ElasticsearchClient(settings);
+});
+#endregion
 
 #region -- Datadog
 Log.Logger = new LoggerConfiguration()

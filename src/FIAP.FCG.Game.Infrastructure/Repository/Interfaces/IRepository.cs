@@ -6,8 +6,8 @@ public interface IRepository<T> where T : EntityBase
 {
     IList<T> GetAll();
     T? GetById(long id);
-    void Create(T entity);
-    void Update(T entity);
+    T Create(T entity);
+    T Update(T entity);
     void DeleteById(long id);
 
 }

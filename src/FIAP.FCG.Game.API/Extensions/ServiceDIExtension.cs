@@ -10,6 +10,7 @@ public static class ServiceDIExtension
     {
         services.AddTransient(typeof(IBaseLogger<>), typeof(BaseLogger<>));
         services.AddTransient<IGameService, GameService>();
+        services.AddTransient<IElasticsearchService, ElasticsearchService>();
 
         return services;
     }

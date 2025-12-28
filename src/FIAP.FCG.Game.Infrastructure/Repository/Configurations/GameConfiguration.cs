@@ -30,5 +30,19 @@ public class GameConfiguration : IEntityTypeConfiguration<GameEntity>
         builder.Property(p => p.Description)
             .IsRequired()
             .HasMaxLength(1000);
+
+        builder.Property(p => p.ReleaseDate)
+            .HasColumnType("timestamp without time zone")
+            .IsRequired();
+
+        builder.Property(p => p.PurchaseCount)
+            .HasColumnType("integer");
+
+        builder.Property(p => p.AverageRating)
+            .HasColumnType("real");
+
+        builder.Property(p => p.Genre)
+            .IsRequired()
+            .HasMaxLength(250);
     }
 }

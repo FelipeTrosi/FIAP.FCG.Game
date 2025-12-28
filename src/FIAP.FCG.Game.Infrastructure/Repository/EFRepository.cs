@@ -9,22 +9,24 @@ namespace FIAP.FCG.Game.Infrastructure.Repository
         protected ApplicationDbContext _context = context;
         protected DbSet<T> _dbSet = context.Set<T>();
 
-        public void Create(T entity)
+        public T Create(T entity)
         {
-            _dbSet.Add(entity);
+            var entityCreated = _dbSet.Add(entity);
             _context.SaveChanges();
+            return entityCreated.Entity;
         }
 
         public IList<T> GetAll() 
             => _dbSet.ToList();
 
         public T? GetById(long id)
-            => _dbSet.FirstOrDefault(q => q.Id == id);
+            => _dbSet.AsNoTracking().FirstOrDefault(q => q.Id == id);
 
-        public void Update(T entity)
+        public T Update(T entity)
         {
-            _dbSet.Update(entity);
+            var entityUpdated = _dbSet.Update(entity);
             _context.SaveChanges();
+            return entityUpdated.Entity;
         }
 
         public void DeleteById(long id)

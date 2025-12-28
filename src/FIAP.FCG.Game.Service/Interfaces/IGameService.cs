@@ -8,4 +8,6 @@ public interface IGameService
     void Create(GameCreateDto entity);
     void Update(GameUpdateDto entity);
     void DeleteById(long id);
+    GameOutputDto? IncreasePurchaseCount(long id);
+    GameOutputDto? UpdateRating(long id, float rating);
 }
