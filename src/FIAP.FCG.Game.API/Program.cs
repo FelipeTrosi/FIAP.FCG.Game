@@ -103,6 +103,8 @@ builder.Services.AddSingleton(sp =>
 });
 #endregion
 
+builder.Services.AddHealthChecks();
+
 #region -- Datadog
 Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Information()
@@ -144,6 +146,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-//app.MapGet("/health", () => Results.Ok("Ok 200 !"));
+app.MapHealthChecks("/health");
 
 app.Run();
