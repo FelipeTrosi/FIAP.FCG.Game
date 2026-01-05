@@ -1,5 +1,6 @@
 ﻿using FIAP.FCG.Game.Service.Dto.Game;
 using FIAP.FCG.Game.Service.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FIAP.FCG.Game.API.Controllers
@@ -18,6 +19,7 @@ namespace FIAP.FCG.Game.API.Controllers
         /// <response code="200">Jogo criado com sucesso.</response>
         /// <response code="400">Dados inválidos.</response>
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] GameCreateDto input)
         {
             _service.Create(input);
@@ -31,6 +33,7 @@ namespace FIAP.FCG.Game.API.Controllers
         /// <response code="200">Jogo atualizado com sucesso.</response>
         /// <response code="404">Jogo não encontrado.</response>
         [HttpPut]
+        [Authorize]
         public IActionResult Put([FromBody] GameUpdateDto input)
         {
             _service.Update(input);
@@ -44,6 +47,7 @@ namespace FIAP.FCG.Game.API.Controllers
         /// <response code="200">Jogo removido com sucesso.</response>
         /// <response code="404">Jogo não encontrado.</response>
         [HttpDelete("{id:long}")]
+        [Authorize(Policy = "Admin")]
         public IActionResult Delete(long id)
         {
             _service.DeleteById(id);
@@ -57,6 +61,7 @@ namespace FIAP.FCG.Game.API.Controllers
         /// <response code="200">Jogo encontrado.</response>
         /// <response code="404">Jogo não encontrado.</response>
         [HttpGet("GetById/{id:long}")]
+        [Authorize]
         public IActionResult GetById(long id)
         {
             return Ok(_service.GetById(id));
@@ -67,6 +72,7 @@ namespace FIAP.FCG.Game.API.Controllers
         /// </summary>
         /// <response code="200">Lista de jogos retornada com sucesso.</response>
         [HttpGet("GetAll")]
+        [Authorize(Policy = "Admin")]
         public IActionResult GetAll()
         {
             return Ok(_service.GetAll());
@@ -78,6 +84,7 @@ namespace FIAP.FCG.Game.API.Controllers
         /// <param name="id">ID do jogo.</param>
         /// <response code="200">Jogo atualizado.</response>
         [HttpPut("IncreasePurchaseCount/{id:long}")]
+        [Authorize]
         public IActionResult IncreasePurchaseCount(long id)
         {
             return Ok(_service.IncreasePurchaseCount(id));
@@ -90,6 +97,7 @@ namespace FIAP.FCG.Game.API.Controllers
         /// <param name="rating">Nota do jogo.</param>
         /// <response code="200">Jogo atualizado.</response>
         [HttpPut("IncreasePurchaseCount/{id:long}/{rating:float}")]
+        [Authorize]
         public IActionResult UpdateRating(long id, float rating)
         {
             return Ok(_service.UpdateRating(id, rating));
@@ -101,6 +109,7 @@ namespace FIAP.FCG.Game.API.Controllers
         /// <param name="q">Termo de busca</param>
         /// <param name="size">Quantidade de resultados</param>
         [HttpGet("search")]
+        [Authorize]
         public async Task<ActionResult<List<GameOutputDto>>> Search(
             [FromQuery] string q,
             [FromQuery] int size = 10)
@@ -118,6 +127,7 @@ namespace FIAP.FCG.Game.API.Controllers
         /// <param name="genres">Lista de gêneros do histórico</param>
         /// <param name="size">Quantidade de resultados</param>
         [HttpPost("recommendations")]
+        [Authorize]
         public async Task<ActionResult<List<GameOutputDto>>> GetRecommendations(
             [FromBody] List<string> genres,
             [FromQuery] int size = 10)
@@ -134,6 +144,7 @@ namespace FIAP.FCG.Game.API.Controllers
         /// </summary>
         /// <param name="top">Quantidade de gêneros</param>
         [HttpGet("top-genres")]
+        [Authorize]
         public async Task<ActionResult<Dictionary<string, long>>> GetTopGenres(
             [FromQuery] int top = 10)
         {
@@ -146,6 +157,7 @@ namespace FIAP.FCG.Game.API.Controllers
         /// </summary>
         /// <param name="top">Quantidade de gêneros</param>
         [HttpGet("top-genres-by-sales")]
+        [Authorize]
         public async Task<ActionResult<Dictionary<string, long>>> GetTopGenresBySales(
             [FromQuery] int top = 10)
         {
@@ -157,6 +169,7 @@ namespace FIAP.FCG.Game.API.Controllers
         /// Avaliação média por gênero
         /// </summary>
         [HttpGet("average-rating-by-genre")]
+        [Authorize]
         public async Task<ActionResult<Dictionary<string, double>>> GetAverageRatingByGenre()
         {
             var results = await _metricsService.GetAverageRatingByGenreAsync();
@@ -168,6 +181,7 @@ namespace FIAP.FCG.Game.API.Controllers
         /// </summary>
         /// <param name="size">Quantidade de resultados</param>
         [HttpGet("recent-games")]
+        [Authorize]
         public async Task<ActionResult<List<GameOutputDto>>> GetRecentGames(
             [FromQuery] int size = 10)
         {
@@ -179,6 +193,7 @@ namespace FIAP.FCG.Game.API.Controllers
         /// Métricas gerais do catálogo
         /// </summary>
         [HttpGet("general-metrics")]
+        [Authorize]
         public async Task<ActionResult<Dictionary<string, object>>> GetGeneralMetrics()
         {
             var results = await _metricsService.GetGeneralMetricsAsync();
@@ -189,6 +204,7 @@ namespace FIAP.FCG.Game.API.Controllers
         /// Dashboard completo com todas as métricas
         /// </summary>
         [HttpGet("dashboard")]
+        [Authorize]
         public async Task<ActionResult<object>> GetDashboard()
         {
             var generalMetrics = await _metricsService.GetGeneralMetricsAsync();
