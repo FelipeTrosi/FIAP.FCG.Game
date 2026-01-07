@@ -88,25 +88,26 @@ public class ElasticsearchService(IBaseLogger<ElasticsearchService> logger, Elas
         }
 
         var response = await _client.SearchAsync<GameOutputDto>(s => s
-            .Index(INDEX_NAME)
-            .Size(size)
-            .Query(q => q
-                .Bool(b => b
-                    .Should(
-                        userGenres.Select(genre =>
-                            new Action<QueryDescriptor<GameOutputDto>>(query =>
-                                query.Term(t => t.Field(f => f.Genre).Value(genre))
-                            )
-                        ).ToArray()
-                    )
-                    .MinimumShouldMatch(1)
-                )
-            )
-            .Sort(s => s
-                .Field(f => f.AverageRating, new FieldSort { Order = SortOrder.Desc })
-                .Field(f => f.PurchaseCount, new FieldSort { Order = SortOrder.Desc })
-            )
-        );
+           .Index(INDEX_NAME)
+           .Size(size)
+           .Query(q => q
+               .Bool(b => b
+                   .Should(
+                       userGenres.Select(genre =>
+                           new Action<QueryDescriptor<GameOutputDto>>(query =>
+                               query.Term(t => t.Field("genre.keyword").Value(genre))
+                           )
+                       ).ToArray()
+                   )
+                   .MinimumShouldMatch(1)
+               )
+           )
+           .Sort(sort => sort
+               .Field(f => f.AverageRating, new FieldSort { Order = SortOrder.Desc})
+               .Field(f => f.PurchaseCount, new FieldSort { Order = SortOrder.Desc })
+           )
+       );
+
 
         if (!response.IsValidResponse)
         {
